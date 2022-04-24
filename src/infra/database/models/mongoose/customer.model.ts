@@ -6,6 +6,7 @@ export interface CustomerDetails {
   phoneNo: string;
   email: string;
   password: string;
+  balance: number;
 }
 
 export interface CustomerDocument extends CustomerDetails, mongoose.Document {
@@ -35,6 +36,11 @@ const customerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    balance: {
+      type: Number,
+      default: 9999999,
+    },
+
   },
   {
     timestamps: true,

@@ -1,21 +1,26 @@
 import { Request, Response } from 'express';
 import CreateCustomer from '../../../usecases/createCustomer';
 import CustomerOrder from '../../../usecases/customerOrder';
+import PayForOrder from '../../../usecases/payForOrder';
 import axios from 'axios';
 
 class CustomerController {
   createCustomer: CreateCustomer;
   customerOrder: CustomerOrder;
+  payForOrder: PayForOrder;
 
   constructor({
     createCustomer,
     customerOrder,
+    payForOrder,
   }: {
     createCustomer: CreateCustomer;
     customerOrder: CustomerOrder;
+    payForOrder: PayForOrder;
   }) {
     this.createCustomer = createCustomer;
     this.customerOrder = customerOrder;
+    this.payForOrder = payForOrder;
   }
 
   async create(req: Request, res: Response) {
@@ -58,8 +63,8 @@ class CustomerController {
           if (response.data.success) {
             return res.status(201).json({
               success: true,
-              msg: `Order successfully created`,
-              order: customerOrder,
+              msg: `Order was successful`,
+              order: response.data.order.payment,
             });
           }
         })
@@ -71,6 +76,31 @@ class CustomerController {
             msg: `Order successfully created`,
           });
         });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ success: false, msg: `${error.message}` });
+        throw new Error(`${error.message}`);
+      }
+      throw error;
+    }
+  }
+
+  async pay(req: Request, res: Response) {
+    try {
+      const payload = req.body;
+      const paymentSuccess = await this.payForOrder.execute(payload);
+
+      if (paymentSuccess) {
+        return res.status(200).json({
+          success: true,
+          msg: `Payment is successful`,
+        });
+      } else {
+        return res.status(400).json({
+          success: false,
+          msg: `Insufficient funds`,
+        });
+      }
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ success: false, msg: `${error.message}` });

@@ -73,7 +73,7 @@ class CustomerController {
           console.log('error: ', error?.message);
           return res.status(400).json({
             success: false,
-            msg: `Order successfully created`,
+            msg: `Order failed`,
           });
         });
     } catch (error) {

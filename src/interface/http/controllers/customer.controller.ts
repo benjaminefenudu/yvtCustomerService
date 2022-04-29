@@ -59,14 +59,12 @@ class CustomerController {
         .post(`${process.env.ORDER_SERVICE_URL}`, {
           order: customerOrder,
         })
-        .then(async (response) => {
-          if (response.data.success) {
-            return res.status(201).json({
-              success: true,
-              msg: `Order was successful`,
-              order: response.data.order.payment,
-            });
-          }
+        .then((response) => {
+          res.status(201).json({
+            success: true,
+            msg: `Order sent`,
+            order: response.data.order,
+          });
         })
         .catch((error) => {
           console.log('Failed to send order');
@@ -89,14 +87,14 @@ class CustomerController {
     try {
       const payload = req.body;
       const paymentSuccess = await this.payForOrder.execute(payload);
-
+      
       if (paymentSuccess) {
         return res.status(200).json({
           success: true,
           msg: `Payment is successful`,
         });
       } else {
-        return res.status(400).json({
+        return res.status(200).json({
           success: false,
           msg: `Insufficient funds`,
         });

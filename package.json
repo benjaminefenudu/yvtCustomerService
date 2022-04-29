@@ -21,6 +21,7 @@
     "bcrypt": "^5.0.1",
     "dotenv": "^16.0.0",
     "mongoose": "^6.3.0",
+    "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
   }
 }

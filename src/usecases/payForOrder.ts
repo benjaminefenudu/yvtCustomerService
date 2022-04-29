@@ -38,7 +38,7 @@ class PayForOrder {
 
       return paymentSuccess;
     } catch (error) {
-      throw error;
+      console.log(error)
     }
   }
 }
